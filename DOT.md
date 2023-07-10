@@ -10,7 +10,7 @@ Le DOT ne doit pas être analogue à un plan, ni fournir des résultats ou des i
 
 Le DOT peut être aussi l'occasion d'indiquer les éventuelles difficultés rencontrées, la manière dont elles ont été surmontées ou non, les rebonds ou inflexions dans la démarche, soulignant ainsi la progression effective du travail, permettant aux examinateurs d'avoir une meilleure lisibilité du «cheminement» du candidat.
 
-1. 
+1. Jeudi 1er juin 2023 : début de code du jeu
 2. 
 3. 
 4. 
@@ -26,11 +26,11 @@ Le DOT peut être aussi l'occasion d'indiquer les éventuelles difficultés renc
 Notez **chaque semaine** ce que vous faites et la date correspondante.
 
 - Jeudi 2 février 2023 : première séance de TIPE. Présentation des attendus. J'ai créé mon dépot Github.
-- Jeudi 18 mai : Recherche sur les IA qui existent déjà pour le jeu
-- Jeudi 25 mai : Documentation (algorithme a utiliser, fonction d'évaluation...)
+- Jeudi 18 mai 2023 : Recherche sur les IA qui existent déjà pour le jeu
+- Jeudi 25 mai 2023 : Documentation (algorithme a utiliser, fonction d'évaluation...)
 - Jeudi 1 juin 2023 : Code du jeu
--
--
+- Jeudi 8 juin 2023 : Début du code le l'IA avec la mise en place du graphe
+- Lundi 10 juillet 2023 : Début du code de la fonction d'évaluation
 -
 -
 -
