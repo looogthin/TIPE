@@ -1,3 +1,3 @@
 ﻿  main.c
-E:\Documents\MPI\TIPE\code\MCTS\MCTS\main.c(79,8): warning C4244: 'fonction' : conversion de 'time_t' en 'unsigned int', perte possible de données
+E:\Documents\MPI\TIPE\code\MCTS\MCTS\main.c(184,8): warning C4244: 'fonction' : conversion de 'time_t' en 'unsigned int', perte possible de données
   MCTS.vcxproj -> E:\Documents\MPI\TIPE\code\MCTS\x64\Debug\MCTS.exe
