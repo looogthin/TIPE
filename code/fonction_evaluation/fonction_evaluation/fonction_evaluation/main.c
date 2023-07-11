@@ -92,50 +92,6 @@ Stack* stack_pop(Stack* s) {
 *				GRAPHE
 * --------------------------------------------------------
 */
-/*
-struct Edge {
-	int a;
-	int b;
-	int val;
-};
-typedef struct Edge Edge;
-
-void edge_print(Edge e) {
-	printf("%d -> %d -> %d\n", e.a, e.b, e.val);
-}
-
-struct Graphe {
-	int size;
-	Edge* edges;
-};
-typedef struct Graphe Graphe;
-
-Graphe* graphe_create(int size) {
-	Graphe* g = malloc(sizeof(Graphe));
-	if (g == NULL)
-		return NULL;
-	Edge* e = malloc(size * sizeof(Edge));
-	if (e == NULL) {
-		free(g);
-		return NULL;
-	}
-	g->size = size;
-	g->edges = e;
-	return g;
-}
-
-void graphe_free(Graphe* g) {
-	if (g == NULL)
-		return;
-	if (g->edges != NULL)
-		free(g->edges);
-	free(g);
-}
-
-void graphe_print(Graphe* g) {
-	for (int i = 0; i < g->size; i++)
-		edge_print(g->edges[i]);
-}*/
 
 struct Graphe {	//	representation matrice
 	int size;
@@ -180,38 +136,35 @@ void graphe_print(Graphe* g) {
 * --------------------------------------------------------
 */
 
-void set_edge(Plateau *p, Graphe* g, int a, int b) {
-	int value = p->tab[b];
-	if (value == 0 || value == 1) {
-		g->tab[a * g->size + b] = 3.0;
-		g->tab[b * g->size + a] = 3.0;
+void set_edge(Plateau* p, Graphe* g, int a, int b) {
+	if (p->tab[b] == 0 || p->tab[b] == 1) {
+		g->tab[a * p->size + b] = 3;
+		g->tab[b * p->size + a] = 3;
 	}
-	else if (value == 2) {
-		g->tab[a * g->size + b] = INFINITY;
-		g->tab[b * g->size + a] = INFINITY;
+	else if (p->tab[b] == -1) {
+		g->tab[a * p->size + b] = INFINITY;
+		g->tab[b * p->size + a] = INFINITY;
 	}
 }
 
-void get_neighbours(Plateau* p, Graphe* g, int a) {
-	if (a != 1)
-		return;
+void set_neighbours(Plateau* p, Graphe *g, int a) {
 	if (get_column(p, a) > 0)
 		set_edge(p, g, a, a - 1);
-	if (get_column(p, a) < p->size - 1)
+	if (get_column(p, a) < p->size)
 		set_edge(p, g, a, a + 1);
-	if (get_line(p, a) > 0)
+	else if (get_line(p, a) > 0)
 		set_edge(p, g, a, a - p->size);
-	if (get_line(p, a) < p->size - 1)
+	else if (get_line(p, a) < p->size - 1)
 		set_edge(p, g, a, a + p->size);
-	if (get_column(p, a) > 0 && get_line(p, a) > 0)
+	else if (get_line(p, a) > 0 && get_column(p, a) > 0)
 		set_edge(p, g, a, a - p->size - 1);
-	if (get_column(p, a) < p->size && get_line(p, a) < p->size - 1)
+	else if (get_line(p, a) < p->size - 1 && get_column(p, a) < p->size - 1)
 		set_edge(p, g, a, a + p->size + 1);
 }
 
 void play(Plateau* p, Graphe *g, int a, int player) {
 	p->tab[a] = player;
-	get_neighbours(p, g, a);
+	set_neighbours(p, g, a);
 	plateau_print(p);
 	graphe_print(g);
 }
