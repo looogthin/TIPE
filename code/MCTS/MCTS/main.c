@@ -99,6 +99,16 @@ void plateau_print(Plateau* p) {
 	}
 }
 
+void tab_bool_print(Plateau* p, bool* tab) {
+	printf("\n\n");
+	for (int i = 0; i < p->size; i++) {
+		for (int j = 0; j < p->size; j++)
+			printf("%d ", tab[i * p->size + j]);
+		printf("\n");
+	}
+	printf("\n\n");
+}
+
 
 
 
@@ -109,40 +119,39 @@ void plateau_print(Plateau* p) {
 * --------------------------------------------------------
 */
 
-Stack* chemin = NULL;
-
-Stack* get_neighbours(Plateau* p, bool *vus, int player, int i) {
+Stack* get_neighbours(Plateau* p, bool* vus, int player, int a) {
 	Stack* s = NULL;
 	int max = p->size - 1;
-	int l = i - 1;
-	if (!vus[l] && get_line(p, i) > 0 && p->tab[l] == player)	//	left
+	int l = a - 1;
+	if (!vus[l] && get_column(p, a) > 0 && p->tab[l] == player)
 		s = stack_push(s, l);
-	int r = i + 1;
-	if (!vus[r] && get_line(p, i) < max && p->tab[r] == player)	//	right
+	int r = a + 1;
+	if (!vus[r] && get_column(p, a) < max && p->tab[r] == player)
 		s = stack_push(s, r);
-	int t = i - p->size;
-	if (!vus[t] && get_column(p, i) > 0 && p->tab[t] == player)	//	top
+	int t = a - p->size;
+	if (!vus[t] && get_line(p, a) > 0 && p->tab[t] == player)
 		s = stack_push(s, t);
-	int b = i + p->size;
-	if (!vus[b] && get_column(p, i) < max && p->tab[b] == player)	//	bottom
+	int b = a + p->size;
+	if (!vus[b] && get_line(p, a) < max && p->tab[b] == player)
 		s = stack_push(s, b);
-	int tl = i - p->size - 1;
-	if (!vus[tl] && get_line(p, i) > 0 && get_column(p, i) > 0 && p->tab[tl] == player)	//	top left
-		s = stack_push(s, tl);
-	int br = i + p->size + 1;
-	if (!vus[br] && get_line(p, i) < max && get_column(p, i) < max && p->tab[br] == player)	//	bottom right
-		s = stack_push(s, br);
+	int tr = a - p->size + 1;
+	if (!vus[tr] && get_column(p, a) < max && get_line(p, a) > 0 && p->tab[tr] == player)
+		s = stack_push(s, tr);
+	int bl = a + p->size - 1;
+	if (!vus[bl] && get_column(p, a) > 0 && get_line(p, a) < max && p->tab[bl] == player)
+		s = stack_push(s, bl);
 	return s;
 }
 
-bool isNextWinner(Plateau* p, bool *vus, int player, int i) {
-	vus[i] = true;
-	if (player == 1 && get_line(p, i) == p->size - 1)
+bool isNextWinner(Plateau* p, bool* vus, int player, int a) {
+	if (p->tab[a] != player)
+		return false;
+	if (player == 1 && get_line(p, a) == p->size - 1)
 		return true;
-	else if (player == 2 && get_column(p, i) == p->size - 1)
+	if (player == 2 && get_column(p, a) == p->size - 1)
 		return true;
-	chemin = stack_push(chemin, i);
-	Stack* s = get_neighbours(p, vus, player, i);
+	vus[a] = true;
+	Stack* s = get_neighbours(p, vus, player, a);
 	while (s != NULL) {
 		if (isNextWinner(p, vus, player, s->val)) {
 			stack_free(s);
@@ -150,33 +159,37 @@ bool isNextWinner(Plateau* p, bool *vus, int player, int i) {
 		}
 		s = stack_pop(s);
 	}
-	chemin = stack_pop(chemin);
 	return false;
 }
 
 bool isWinner(Plateau* p, int player) {
-	bool* vus = malloc(p->size * p->size * sizeof(bool));
+	bool *vus = malloc(p->size * p->size * sizeof(bool));
 	if (vus == NULL)
-		exit(EXIT_FAILURE);
+		return false;
 	for (int i = 0; i < p->size * p->size; i++)
 		vus[i] = false;
-
-	for (int k = 0; k < p->size; k++) {
-		chemin = stack_push(chemin, k);
-		vus[k] = true;
-		Stack* s = get_neighbours(p, vus, player, k);
-		while (s != NULL) {
-			if (isNextWinner(p, vus, player, s->val)) {
-				free(vus);
-				stack_free(s);
-				return true;
-			}
-			s = stack_pop(s);
-		}
-		chemin = stack_pop(chemin);
+	Stack* s = NULL;
+	if (player == 1) {
+		for (int i = 0; i < p->size; i++)
+			if (p->tab[i] == player)
+				s = stack_push(s, i);
+	}
+	else if (player == 2) {
+		for (int i = 0; i < p->size; i++)
+			if (p->tab[i * p->size] == player)
+				s = stack_push(s, i * p->size);
 	}
 
-	free(vus);
+	while (s != NULL) {
+		vus[s->val] = true;
+		if (isNextWinner(p, vus, player, s->val)) {
+			stack_free(s);
+			free(vus);
+			return true;
+		}
+		s = stack_pop(s);
+	}
+
 	return false;
 }
 
@@ -186,16 +199,13 @@ int main() {
 	Plateau* p = plateau_create(5);
 
 	int player = 1;
-	for (int i = 0; i < p->size * p->size - 1;) {
+	for (int i = 0; i < p->size * p->size;) {
 		int a = rand() % (p->size * p->size);
 		if (p->tab[a] == 0) {
 			p->tab[a] = player;
 			if (isWinner(p, player)) {
-				char w = player == 1 ? 'X' : 'O';
-				printf("\n");
-				stack_print(chemin);
-				printf("\n");
-				printf("%c win !\n\n", w);
+				char w = player == 1 ? 'X' : 'O'; 
+				printf("\n%c win !\n\n", w);
 				break;
 			}
 			player = (player == 1) ? 2 : 1;
