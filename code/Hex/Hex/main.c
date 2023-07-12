@@ -114,10 +114,13 @@ void initGame() {
 	game.sizeLeft = 185;
 	game.sizeTop = 80;
 	game.isTurnRed = true;
-	game.red = initPlayer(&game, game.red);
-	game.blue = initPlayer(&game, game.blue);
-	if (game.red == NULL || game.blue == NULL)
+	game.red = initPlayer(&game, game.red, 1);
+	game.blue = initPlayer(&game, game.blue, 2);
+	game.plateau = malloc(game.nbCases * game.nbCases * sizeof(int));
+	if (game.red == NULL || game.blue == NULL || game.plateau == NULL)
 		quit("Erreur lors de l'allocation de memoire", "", EXIT_FAILURE);
+	for (int i = 0; i < game.nbCases * game.nbCases; i++)
+		game.plateau[i] = 0;
 }
 
 /*

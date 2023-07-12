@@ -11,7 +11,7 @@ struct Player {
 	unsigned int nb;	//	Nombre de pions qu'a pose le joueur
 	int* pawn;			//	Tableau contenant les positions des pions (position x aux indices paires et y aux impaires)
 	SDL_Rect* rects;	//	Tableau contenant les rectangles des pions
-	bool isHorizontal;	//	Vaut true si le joueur doit relier les bords de gauche a droite, false sin il doit relier les bords de haut en bas
+	int num;			//	Numero du joueur (1 s'il doit relier de haut en bas, 2 s'il doit relier de gauche a droite)
 };
 typedef struct Player Player;
 
@@ -28,8 +28,13 @@ struct Game {
 	bool isTurnRed;		//	Vaut true si c'est le tour du joueur rouge, false sinon
 	Player* red;		//	Joueur rouge
 	Player* blue;		//	Joueur bleu
+	int* plateau;		//	Plateau (une case vaut le numero du joueur ou 0 si elle est vide)
 };
 typedef struct Game Game;
+
+int get_line(Game *g, int a);
+
+int get_column(Game *g, int a);
 
 /*
 * bool initPlayer
@@ -40,7 +45,7 @@ typedef struct Game Game;
 *
 * Initialise toutes les variables necessaires au joueur
 */
-Player* initPlayer(Game *game, Player *p);
+Player* initPlayer(Game *game, Player *p, int num);
 
 /*
 * void addPawn
@@ -53,7 +58,7 @@ Player* initPlayer(Game *game, Player *p);
 *
 * Ajoute un pion au joueur
 */
-void addPawn(Player* p, int x, int y, SDL_Rect rect);
+void addPawn(Game *g, Player* p, int x, int y, SDL_Rect rect);
 
 /*
 * bool areInContact
@@ -67,6 +72,16 @@ void addPawn(Player* p, int x, int y, SDL_Rect rect);
 * Teste si 2 cases se touchent ou non
 */
 bool areInContact(int x1, int y1, int x2, int y2);
+
+/*
+* bool isWinner
+* Parametre :
+*	- Game *game
+* Return bool : true si le joueur gagne, false sinon
+*
+* Teste si le joueur gagne
+*/
+bool isWinner(Game* game, Player* player);
 
 /*
 * bool containsPawn
@@ -96,15 +111,5 @@ bool containsPawn(Player *p, int x, int y);
 * Joue un tour
 */
 int play(Game *game, int x, int y, SDL_Rect rect);
-
-/*
-* bool isWinner
-* Parametre :
-*	- Game *game
-* Return bool : true si le joueur gagne, false sinon
-* 
-* Teste si le joueur gagne
-*/
-bool isWinner(Game* game, Player *player);
 
 #endif GAME_H
