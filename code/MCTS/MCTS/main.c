@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
+#include <limits.h>
 
 /*
 * --------------------------------------------------------
@@ -73,8 +74,20 @@ Plateau* plateau_create(int size) {
 }
 
 void plateau_free(Plateau* p) {
-	free(p->tab);
+	if (p == NULL)
+		return;
+	if (p->tab != NULL)
+		free(p->tab);
 	free(p);
+}
+
+Plateau* plateau_copy(Plateau *p) {
+	Plateau* n = malloc(sizeof(Plateau));
+	n->size = p->size;
+	n->tab = malloc(n->size * n->size);
+	for (int i = 0; i < n->size * n->size; i++)
+		n->tab[i] = p->tab[i];
+	return n;
 }
 
 int get_line(Plateau* p, int a) {
@@ -196,26 +209,23 @@ bool isWinner(Plateau* p, int player) {
 int main() {
 	srand(time(NULL));
 
-	Plateau* p = plateau_create(5);
+	Plateau* p = plateau_create(11);
 
 	int player = 1;
-	for (int i = 0; i < p->size * p->size;) {
-		int a = rand() % (p->size * p->size);
-		if (p->tab[a] == 0) {
-			p->tab[a] = player;
-			if (isWinner(p, player)) {
-				char w = player == 1 ? 'X' : 'O'; 
-				printf("\n%c win !\n\n", w);
-				break;
-			}
-			player = (player == 1) ? 2 : 1;
-			i++;
-			plateau_print(p);
-			printf("\n\n");
-			//system("PAUSE");
+	for (int i = 0; i < p->size * p->size;i++) {
+		int coup = MCTS(p, player);
+		p->tab[coup] = player;
+		if (isWinner(p, player)) {
+			char w = player == 1 ? 'X' : 'O'; 
+			printf("\n%c win !\n\n", w);
+			break;
 		}
+		player = (player == 1) ? 2 : 1;
+		plateau_print(p);
+		printf("\n\n");
+		system("PAUSE");
 	}
-
+	
 	plateau_print(p);
 
 	plateau_free(p);

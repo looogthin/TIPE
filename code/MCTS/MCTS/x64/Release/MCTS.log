@@ -1,8 +1,8 @@
 ﻿  main.c
-E:\Documents\MPI\TIPE\code\MCTS\MCTS\main.c(197,8): warning C4244: 'fonction' : conversion de 'time_t' en 'unsigned int', perte possible de données
+E:\Documents\MPI\TIPE\code\MCTS\MCTS\main.c(263,8): warning C4244: 'fonction' : conversion de 'time_t' en 'unsigned int', perte possible de données
   Génération de code en cours
-  5 of 16 functions (31.2%) were compiled, the rest were copied from previous compilation.
+  2 of 20 functions (10.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Fin de la génération du code
   MCTS.vcxproj -> E:\Documents\MPI\TIPE\code\MCTS\x64\Release\MCTS.exe
