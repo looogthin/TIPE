@@ -21,6 +21,7 @@ typedef struct Player Player;
 */
 struct Game {
 	int nbCases;		//	Nombre de cases sur la largeur
+	int size;			//	Nombre de cases sur tout le plateau
 	int xPawn;			//	taille x d'un pion
 	int yPawn;			//	taille y d'un pion
 	int sizePrintPawn;	//	taille affiche du pion

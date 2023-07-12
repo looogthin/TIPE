@@ -15,8 +15,8 @@ Player* initPlayer(Game *game, Player* p, int num) {
 	if (p == NULL)
 		return NULL;
 	p->nb = 0;
-	p->pawn = malloc(game->nbCases * game->nbCases * sizeof(int));
-	p->rects = malloc(game->nbCases * game->nbCases * sizeof(SDL_Rect) / 2);
+	p->pawn = malloc(game->size * sizeof(int));
+	p->rects = malloc(game->size * sizeof(SDL_Rect) / 2);
 	p->num = num;
 	return p;
 }
@@ -89,10 +89,10 @@ bool isNextWinner(Game* g, bool* vus, int player, int a) {
 bool isWinner(Game* g, Player *player) {
 
 	//	Init
-	bool* vus = malloc(g->nbCases * g->nbCases * sizeof(bool));
+	bool* vus = malloc(g->size * sizeof(bool));
 	if (vus == NULL)
 		return false;
-	for (int i = 0; i < g->nbCases * g->nbCases; i++)
+	for (int i = 0; i < g->size; i++)
 		vus[i] = false;
 	Stack* s = NULL;
 	if (player->num == 1) {

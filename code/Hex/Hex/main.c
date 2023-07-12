@@ -110,6 +110,7 @@ void initWindow() {
 */
 void initGame() {
 	game.nbCases = 11;
+	game.size = game.nbCases * game.nbCases;
 	game.xPawn = 98;
 	game.yPawn = 85;
 	game.sizePrintPawn = 77;
@@ -224,7 +225,17 @@ int main(int argc, char** argv) {
 
 	//	Boucle
 	draw(renderer);
-	while (event()) {}
+	//while (event()) {}
+	while (true) {
+		int win = ia_play(&game);
+		if (win == 0)
+			game.isTurnRed = !game.isTurnRed;
+		else if (win == 1)
+			quit("Red win !", "", EXIT_SUCCESS);
+		else if (win == 2)
+			quit("Blue win !", "", EXIT_SUCCESS);
+		draw(renderer);
+	}
 		
 	// Quitter
 	quit("", "", EXIT_SUCCESS);

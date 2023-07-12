@@ -3,6 +3,6 @@
 
 #include "game.h"
 
-void ia_play(Game *g);
+int ia_play(Game *g);
 
 #endif
