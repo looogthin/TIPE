@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "stack.h"
 #include <SDL.h>
 #include <stdbool.h>
 
@@ -74,6 +75,32 @@ void addPawn(Game *g, Player* p, int x, int y, SDL_Rect rect);
 bool areInContact(int x1, int y1, int x2, int y2);
 
 /*
+* Stack* get_neighbours
+* Parametres :
+*	- Game *g : parametres du jeu
+*	- bool *vus : tableau de booleens qui valent true si le piona deja ete visite
+*	- int player : numero du joueur
+*	- int a : case a tester
+* Return Stack *s : pile contenant les voisins non visites de la case
+* 
+* Renvoie une pile contenant les voisins non visite de la case
+*/
+Stack* get_neighbours(Game* g, bool* vus, int player, int a);
+
+/*
+* Stack* get_neighbours
+* Parametres :
+*	- Game *g : parametres du jeu
+*	- bool *vus : tableau de booleens qui valent true si le piona deja ete visite
+*	- int player : numero du joueur
+*	- int a : case a tester
+* Return bool : true si le pion et sur un chemin gagnant, false sinon
+*
+* Renvoie si le pion est sur un chemin gagnant
+*/
+bool isNextWinner(Game* g, bool* vus, int player, int a);
+
+/*
 * bool isWinner
 * Parametre :
 *	- Game *game
@@ -98,6 +125,7 @@ bool containsPawn(Player *p, int x, int y);
 /*
 * int play
 * Parametres :
+*	- Game *g : parametres du jeu
 *	- Player *p : joueur qui a joue
 *	- int mouse_x : position x de la souris
 *	- int mouse_y : poisition y de la souris

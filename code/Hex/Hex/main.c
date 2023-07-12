@@ -1,8 +1,10 @@
 #include "game.h"
+#include "ia.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <SDL.h>
 #include <stdbool.h>
+#include <time.h>
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -169,12 +171,23 @@ void mouseButtonLeftPressed(int mouse_x, int mouse_y) {
 	Player* p1 = game.isTurnRed ? game.red : game.blue;
 	SDL_Rect rect = { x * game.xPawn + (y * game.xPawn / 2) + game.sizeLeft, y * game.yPawn + game.sizeTop, game.sizePrintPawn, game.sizePrintPawn };
 	int win = play(&game, x, y, rect);
+	if (win == -1)
+		return;
 	if (win == 0)
 		game.isTurnRed = !game.isTurnRed;
 	else if (win == 1)
 		quit("Red win !", "", EXIT_SUCCESS);
 	else if (win == 2)
 		quit("Blue win !", "", EXIT_SUCCESS);
+	draw(renderer);
+	ia_play(&game);
+	if (win == 0)
+		game.isTurnRed = !game.isTurnRed;
+	else if (win == 1)
+		quit("Red win !", "", EXIT_SUCCESS);
+	else if (win == 2)
+		quit("Blue win !", "", EXIT_SUCCESS);
+	draw(renderer);
 }
 
 /*
@@ -205,12 +218,13 @@ bool event() {
 */
 int main(int argc, char** argv) {
 	//	init
+	srand(time(NULL));
 	initWindow();
 	initGame();
 
 	//	Boucle
-	while (event())
-		draw(renderer);
+	draw(renderer);
+	while (event()) {}
 		
 	// Quitter
 	quit("", "", EXIT_SUCCESS);

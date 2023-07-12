@@ -1,5 +1,4 @@
 #include "game.h"
-#include "stack.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -66,6 +65,7 @@ Stack* get_neighbours(Game* g, bool* vus, int player, int a) {
 }
 
 bool isNextWinner(Game* g, bool* vus, int player, int a) {
+	//	Verifie victoire
 	if (g->plateau[a] != player)
 		return false;
 	if (player == 1 && get_line(g, a) == g->nbCases - 1)
@@ -73,6 +73,8 @@ bool isNextWinner(Game* g, bool* vus, int player, int a) {
 	if (player == 2 && get_column(g, a) == g->nbCases - 1)
 		return true;
 	vus[a] = true;
+
+	//	Recursivite
 	Stack* s = get_neighbours(g, vus, player, a);
 	while (s != NULL) {
 		if (isNextWinner(g, vus, player, s->val)) {
@@ -85,6 +87,8 @@ bool isNextWinner(Game* g, bool* vus, int player, int a) {
 }
 
 bool isWinner(Game* g, Player *player) {
+
+	//	Init
 	bool* vus = malloc(g->nbCases * g->nbCases * sizeof(bool));
 	if (vus == NULL)
 		return false;
@@ -102,6 +106,7 @@ bool isWinner(Game* g, Player *player) {
 				s = stack_push(s, i * g->nbCases);
 	}
 
+	//	Recursivite
 	while (s != NULL) {
 		vus[s->val] = true;
 		if (isNextWinner(g, vus, player->num, s->val)) {
@@ -121,7 +126,7 @@ int play(Game *g, int x, int y, SDL_Rect rect) {
 		addPawn(g, p, x, y, rect);
 	else
 		return -1;
-	if (isWinner(g, p))
+	if (isWinner(g, p))	//	On teste que le joueur qui viens de jouer
 		return p->num;
 	return 0;
 }
