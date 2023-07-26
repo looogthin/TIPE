@@ -27,6 +27,7 @@ void addPawn(Game *g, Player* p, int x, int y, SDL_Rect rect) {
 	p->rects[p->nb] = rect;
 	p->nb++;
 	g->plateau[y * g->nbCases + x] = p->num;
+	g->nbCoups++;
 }
 
 bool areInContact(int x1, int y1, int x2, int y2) {

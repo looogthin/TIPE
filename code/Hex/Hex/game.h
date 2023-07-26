@@ -31,6 +31,7 @@ struct Game {
 	Player* red;		//	Joueur rouge
 	Player* blue;		//	Joueur bleu
 	int* plateau;		//	Plateau (une case vaut le numero du joueur ou 0 si elle est vide)
+	int nbCoups;
 };
 typedef struct Game Game;
 

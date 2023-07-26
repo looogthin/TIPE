@@ -119,6 +119,7 @@ void initGame() {
 	game.isTurnRed = true;
 	game.red = initPlayer(&game, game.red, 1);
 	game.blue = initPlayer(&game, game.blue, 2);
+	game.nbCoups = 0;
 	game.plateau = malloc(game.nbCases * game.nbCases * sizeof(int));
 	if (game.red == NULL || game.blue == NULL || game.plateau == NULL)
 		quit("Erreur lors de l'allocation de memoire", "", EXIT_FAILURE);
@@ -228,13 +229,23 @@ int main(int argc, char** argv) {
 	//while (event()) {}
 	while (true) {
 		int win = ia_play(&game);
-		if (win == 0)
-			game.isTurnRed = !game.isTurnRed;
-		else if (win == 1)
-			quit("Red win !", "", EXIT_SUCCESS);
-		else if (win == 2)
-			quit("Blue win !", "", EXIT_SUCCESS);
 		draw(renderer);
+		if (win == -1) {
+			printf("\n\n\nerror\n\n\n");
+			continue;
+		}
+		else if (win == 0)
+			game.isTurnRed = !game.isTurnRed;
+		else if (win == 1) {
+			printf("Red win !");
+			//quit("Red win !", "", EXIT_SUCCESS);
+			system("PAUSE");
+		}
+		else if (win == 2) {
+			printf("Blue win !");
+			//quit("Blue win !", "", EXIT_SUCCESS);
+			system("PAUSE");
+		}
 	}
 		
 	// Quitter

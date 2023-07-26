@@ -7,6 +7,7 @@
 struct Stack {
 	int val;
 	struct Stack* prev;
+	int size;
 };
 typedef struct Stack Stack;
 
@@ -59,5 +60,26 @@ Stack* stack_pop(Stack* s);
 * Renvoie l'element en haut de la pile sans l'enlever
 */
 int stack_peek(Stack* s);
+
+
+
+/*
+* ------------------------
+* ------	TREE	------
+* ------------------------
+*/
+
+struct Tree {
+	int val;
+	struct Tree* left;
+	struct Tree* right;
+};
+typedef struct Tree Tree;
+
+void tree_delete(Tree* t);
+
+void tree_add_left(Tree* t, int val);
+
+void tree_add_right(Tree* t, int val);
 
 #endif
