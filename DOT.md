@@ -11,7 +11,7 @@ Le DOT ne doit pas être analogue à un plan, ni fournir des résultats ou des i
 Le DOT peut être aussi l'occasion d'indiquer les éventuelles difficultés rencontrées, la manière dont elles ont été surmontées ou non, les rebonds ou inflexions dans la démarche, soulignant ainsi la progression effective du travail, permettant aux examinateurs d'avoir une meilleure lisibilité du «cheminement» du candidat.
 
 1. Jeudi 1er juin 2023 : début de code du jeu
-2. 
+2. Mardi 25 juillet 2023 : fin de l'IA 1.0 -> niveau tres faible
 3. 
 4. 
 5. 
@@ -31,8 +31,8 @@ Notez **chaque semaine** ce que vous faites et la date correspondante.
 - Jeudi 1 juin 2023 : Code du jeu
 - Jeudi 8 juin 2023 : Début du code le l'IA avec la mise en place du graphe
 - Lundi 10 juillet 2023 : Début du code de la fonction d'évaluation
--
--
+- Mardi 25 juillet 2023 : IA 1.0 terminé, on simule aléatoirement la fin de la partie des miliers de fois et on prend le meilleur coup -> même niveau que le random...
+- Jeudi 27 juillet 2023 : IA 1.5, on simule toujours jusqu'à la fin de la partie mais en mélangeant les coups possible et en les distribuant aux 2 joueurs, plus rapide que de les tirer 1 par 1 mais niveau encore faible lorsqu'on joue sur un tableau plus grand que 4x4
 -
 -
 -
