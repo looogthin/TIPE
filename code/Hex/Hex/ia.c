@@ -199,17 +199,45 @@ int MCTS(Game* g, const int nbCoups, const int player) {
 	return coup;
 }*/
 
-bool toEnd(Game* g, int *possibleMoves, int nbPossibleMoves) {
-	return false;
+void plateau_print(Game* g) {
+	for (int i = 0; i < g->nbCases; i++) {
+		for (int j = 0; j < g->nbCases; j++)
+			printf("%d ", g->plateau[i * g->nbCases + j]);
+		printf("\n");
+	}
 }
 
-int MCTS(Game* g, Player* player, int nbCoups) {
+bool toEnd(Game* g, Player *player, int *possibleMoves, int nbPossibleMoves) {
+	
+	//	Fin de partie aleatoire
+	mix(possibleMoves, nbPossibleMoves);
+	int middle = nbPossibleMoves % 2 == 0 ? nbPossibleMoves / 2 : nbPossibleMoves / 2 + 1;
+	for (int i = 0; i < middle; i++)
+		g->plateau[possibleMoves[i]] = player->num;
+	player = g->isTurnRed ? g->blue : g->red;
+	for (int i = middle; i < nbPossibleMoves; i++)
+		g->plateau[possibleMoves[i]] = player->num;
+
+	//	Test victoire
+	bool win = true;
+	if (isWinner(g, player))
+		win = false;			//	a ce moment du programme, la variable player contient l'autre joueur
+
+	//	Enlever les coups
+	for (int i = 0; i < nbPossibleMoves; i++)
+		g->plateau[possibleMoves[i]] = 0;
+
+	return win;
+}
+
+int MCTS(Game* g, Player* player, int nbTests) {
 	int nbPossibleMoves = g->size - g->nbCoups;
 	int* possibleMoves = malloc(nbPossibleMoves * sizeof(int));
 	int* coups = malloc(nbPossibleMoves * sizeof(int));
 	int* valMoves = malloc(nbPossibleMoves * sizeof(int));
 	Stack* stackMoves = NULL;
-	for (int i = 0, j = 0; i < g->size; i++) {
+	int j = 0;
+	for (int i = 0; i < g->size; i++) {
 		if (g->plateau[i] == 0) {
 			possibleMoves[j] = i;
 			coups[j] = i;
@@ -219,23 +247,37 @@ int MCTS(Game* g, Player* player, int nbCoups) {
 		}
 	}
 
-	for (; stackMoves != NULL; stackMoves = stack_pop(stackMoves)) {
+	for (int j = 0; j < nbPossibleMoves && stackMoves != NULL; j++, stackMoves = stack_pop(stackMoves)) {
 		g->plateau[stackMoves->val] = player->num;	//	mettre le coup
-		int index = find(possibleMoves, stackMoves->val, nbPossibleMoves);	//	mettre le coup joue en dernier place, il ne pourra pas etre joue par dessus
+
+		//	Victoire a 100%
+		if (isWinner(g, player)) {
+			g->plateau[stackMoves->val] = 0;
+			free(possibleMoves);
+			free(coups);
+			free(valMoves);
+			int coup = stackMoves->val;
+			stack_delete(stackMoves);
+			return coup;
+		}
+
+		int index = find(possibleMoves, stackMoves->val, nbPossibleMoves);	//	mettre le coup joue en dernier place, ne pourra pas jouer par dessus
 		swap(possibleMoves, index, nbPossibleMoves - 1);
 		swap(valMoves, index, nbPossibleMoves - 1);
 
-		for (int i = 0; i < nbCoups; i++) {
-			if (toEnd(g, possibleMoves, nbPossibleMoves))
-				valMoves[i]++;
-			else
-				valMoves[i]--;
+		for (int i = 0; i < nbTests; i++) {
+			if (toEnd(g, player, possibleMoves, nbPossibleMoves - 1))
+				valMoves[j]++;
 		}
 
 		g->plateau[stackMoves->val] = 0;	//	enlever le coup
 	}
 
-	int coup = coups[0];//tab_max(valMoves, nbPossibleMoves)];
+	int index = tab_max(valMoves, nbPossibleMoves);
+	int coup = coups[index];
+	printf("player : %d\n", g->isTurnRed ? 1 : 2);
+	printf("coup : %d\n", coup);
+	printf("val : %d\n", valMoves[index]);
 	free(possibleMoves);
 	free(coups);
 	free(valMoves);
@@ -246,10 +288,10 @@ int ia_play(Game* g) {
 	time_t begin, end;
 	time(&begin);
 
-	const int nbCoups = g->isTurnRed ? 100 : 1;
+	const int nbTests = g->isTurnRed ? 10000000 : 1;
 	Player* p = g->isTurnRed ? g->red : g->blue;
 
-	int coup = MCTS(g, p, nbCoups);
+	int coup = MCTS(g, p, nbTests);
 	if (coup == -1)
 		return -1;
 	int x = get_column(g, coup);
@@ -261,6 +303,6 @@ int ia_play(Game* g) {
 		return p->num;
 
 	time(&end);
-	printf("\n%f\n", difftime(end, begin));
+	printf("temps : %f\n\n", difftime(end, begin));
 	return 0;
 }

@@ -109,7 +109,7 @@ void initWindow() {
 * Initialise toutes les donnees liees au jeu at aux joueurs
 */
 void initGame() {
-	game.nbCases = 11;
+	game.nbCases = 5;
 	game.size = game.nbCases * game.nbCases;
 	game.xPawn = 98;
 	game.yPawn = 85;
