@@ -215,7 +215,7 @@ int ia_play(Game* g) {
 	time_t begin, end;
 	time(&begin);
 
-	const int nbTests = g->isTurnRed ? 1000 : 1;
+	const int nbTests = g->isTurnRed ? 500000 : 1;
 	Player* p = g->isTurnRed ? g->red : g->blue;
 
 	int coup = MCTS(g, p, nbTests);

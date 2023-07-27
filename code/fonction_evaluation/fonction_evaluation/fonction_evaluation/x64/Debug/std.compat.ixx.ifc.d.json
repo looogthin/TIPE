@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\logiciels\\ide\\vc\\tools\\msvc\\14.36.32532\\modules\\std.compat.ixx",
+        "ProvidedModule": "std.compat",
+        "Includes": [],
+        "ImportedModules": [
+            {
+                "Name": "std",
+                "BMI": "E:\\Documents\\MPI\\TIPE\\code\\fonction_evaluation\\fonction_evaluation\\fonction_evaluation\\x64\\Debug\\std.ixx.ifc"
+            }
+        ],
+        "ImportedHeaderUnits": []
+    }
+}

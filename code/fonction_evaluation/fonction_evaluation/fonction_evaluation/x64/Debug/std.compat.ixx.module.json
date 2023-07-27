@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "x64\\Debug\\std.compat.ixx.obj",
+            "outputs": [
+                "E:\\Documents\\MPI\\TIPE\\code\\fonction_evaluation\\fonction_evaluation\\fonction_evaluation\\x64\\Debug\\vc143.pdb",
+                "x64\\Debug\\",
+                "E:\\Documents\\MPI\\TIPE\\code\\fonction_evaluation\\fonction_evaluation\\fonction_evaluation\\x64\\Debug\\std.compat.ixx.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "std.compat",
+                    "source-path": "e:\\logiciels\\ide\\vc\\tools\\msvc\\14.36.32532\\modules\\std.compat.ixx",
+                    "is-interface": true
+                }
+            ],
+            "requires": [
+                {
+                    "logical-name": "std"
+                }
+            ]
+        }
+    ]
+}

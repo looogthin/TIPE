@@ -109,7 +109,7 @@ void initWindow() {
 * Initialise toutes les donnees liees au jeu at aux joueurs
 */
 void initGame() {
-	game.nbCases = 11;
+	game.nbCases = 3;
 	game.size = game.nbCases * game.nbCases;
 	game.xPawn = 98;
 	game.yPawn = 85;
@@ -158,6 +158,17 @@ void draw(SDL_Renderer* renderer) {
 	SDL_RenderPresent(renderer);
 }
 
+void mouseButtonRightPresssed() {
+	int win = ia_play(&game);
+	if (win == 0)
+		game.isTurnRed = !game.isTurnRed;
+	else if (win == 1)
+		quit("Red win !", "", EXIT_SUCCESS);
+	else if (win == 2)
+		quit("Blue win !", "", EXIT_SUCCESS);
+	draw(renderer);
+}
+
 /*
 * void mouseButtonLeftPressed
 * Parametres :
@@ -182,15 +193,10 @@ void mouseButtonLeftPressed(int mouse_x, int mouse_y) {
 	else if (win == 2)
 		quit("Blue win !", "", EXIT_SUCCESS);
 	draw(renderer);
-	ia_play(&game);
-	if (win == 0)
-		game.isTurnRed = !game.isTurnRed;
-	else if (win == 1)
-		quit("Red win !", "", EXIT_SUCCESS);
-	else if (win == 2)
-		quit("Blue win !", "", EXIT_SUCCESS);
-	draw(renderer);
+
+	mouseButtonRightPresssed(); // IA play
 }
+
 
 /*
 * bool event
@@ -211,6 +217,10 @@ bool event() {
 			mouseButtonLeftPressed(event.button.x, event.button.y);
 			return true;
 		}
+		else if (event.button.button == SDL_BUTTON_RIGHT) {
+			mouseButtonRightPresssed();
+			return true;
+		}
 	}
 	return true;
 }
@@ -226,8 +236,10 @@ int main(int argc, char** argv) {
 
 	//	Boucle
 	draw(renderer);
-	//while (event()) {}
-	while (true) {
+
+	while (event()) {}
+
+	/*while (true) {
 		int win = ia_play(&game);
 		draw(renderer);
 		if (win == -1) {
@@ -246,7 +258,7 @@ int main(int argc, char** argv) {
 			//quit("Blue win !", "", EXIT_SUCCESS);
 			system("PAUSE");
 		}
-	}
+	}*/
 		
 	// Quitter
 	quit("", "", EXIT_SUCCESS);
