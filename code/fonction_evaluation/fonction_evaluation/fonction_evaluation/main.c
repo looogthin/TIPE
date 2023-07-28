@@ -49,20 +49,21 @@ struct Player {
 };
 typedef struct Player Player;
 
-void print_groups(Player* p) {
-	printf("nombre de groupes : %d\n", p->nbGroups);
-	for (int i = 0; i < p->nbGroups; i++) {
-		for (int j = 0; j < p->groups[i].size; j++)
-			printf("%c, ", p->groups[i].tab[j] + 'a');
-		printf("\n");
-	}
-}
-
 const int nbCases = 5;
 const int size = 25;
 char* plateau;
 Player player1 = { '?', NULL, 0 };
 Player player2 = { '!', NULL, 0 };
+Player* player;
+
+void print_groups() {
+	printf("nombre de groupes : %d\n", player->nbGroups);
+	for (int i = 0; i < player->nbGroups; i++) {
+		for (int j = 0; j < player->groups[i].size; j++)
+			printf("%c, ", player->groups[i].tab[j] + 'a');
+		printf("\n");
+	}
+}
 
 int get_column(int a) {
 	return a % nbCases;
@@ -84,58 +85,7 @@ void print_plateau() {
 	}
 }
 
-/*Stack* is_next_in_group(Stack* s, int a, bool* vus, Player* player) {
-	if (vus[a])
-		return s;
-	s = stack_push(s, a);
-	vus[a] = true;
-
-	int max = nbCases - 1;
-	int l = a - 1;
-	if (get_column(a) > 0 && !vus[l] && plateau[l] == player->c)
-		s = is_next_in_group(s, l, vus, player);
-	int r = a + 1;
-	if (get_column(a) < max && !vus[r] && plateau[r] == player->c)
-		s = is_next_in_group(s, r, vus, player);
-	int t = a - nbCases;
-	if (!vus[t] && get_line(a) > 0 && plateau[t] == player->c)
-		s = is_next_in_group(s, t, vus, player);
-	int b = a + nbCases;
-	if (!vus[b] && get_line(a) < max && plateau[b] == player->c)
-		s = is_next_in_group(s, b, vus, player);
-	int tr = a - nbCases + 1;
-	if (!vus[tr] && get_column(a) < max && get_line(a) > 0 && plateau[tr] == player->c)
-		s = is_next_in_group(s, tr, vus, player);
-	int bl = a + nbCases - 1;
-	if (!vus[bl] && get_column(a) > 0 && get_line(a) < max && plateau[bl] == player->c)
-		s = is_next_in_group(s, bl, vus, player);
-	return s;
-}
-
-void get_groups(Player* player) {
-	bool* vus = malloc(size * sizeof(bool));
-	for (int i = 0; i < size; i++)
-		vus[i] = false;
-
-	Group_Pawns g = { NULL, 0 };
-	for (int i = 0; i < player->nbGroups; i++)
-		player->groups[i] = g;
-	player->nbGroups = 0;
-	
-	for (int i = 0; i < size; i++) {
-		if (!vus[i] && plateau[i] == player->c) {
-			Stack* s = is_next_in_group(NULL, i, vus, player);
-			int groupSize = s == NULL ? 0 : s->size;
-			Group_Pawns g = { stack_to_tab(s), groupSize };
-			player->nbGroups++;
-			player->groups[player->nbGroups - 1] = g;
-		}
-	}
-
-	free(vus);
-}*/
-
-int find_group(int a, Player* player) {
+int find_group(int a) {
 	for (int i = 0; i < player->nbGroups; i++)
 		for (int j = 0; j < player->groups[i].size; j++)
 			if (player->groups[i].tab[j] == a)
@@ -143,31 +93,31 @@ int find_group(int a, Player* player) {
 	return -1;
 }
 
-bool isInGroup(Player *player, int g, int a) {
+bool isInGroup(int g, int a) {
 	for (int i = 0; i < player->groups[g].size; i++)
 		if (player->groups[g].tab[i] == a)
 			return true;
 	return false;
 }
 
-void swap_groups(Player* player, int a, int b) {
+void swap_groups(int a, int b) {
 	Group_Pawns tmp = player->groups[a];
 	player->groups[a] = player->groups[b];
 	player->groups[b] = tmp;
 }
 
-void mergeGroups(Player* player, int a, int b) {
+void mergeGroups(int a, int b) {
 	int size = player->groups[a].size + player->groups[b].size;
 	for (int i = player->groups[a].size, j = 0; i < size; i++, j++)
 		player->groups[a].tab[i] = player->groups[b].tab[j];
 	player->groups[a].size = size;
 	int lastGroup = player->nbGroups - 1;
-	swap_groups(player, b, lastGroup);
+	swap_groups(b, lastGroup);
 	free(player->groups[lastGroup].tab);
 	player->nbGroups--;
 }
 
-Stack* get_neighbours(Player* player, int a) {
+Stack* get_neighbours(int a) {
 	Stack* s = NULL;
 	int max = nbCases - 1;
 	int l = a - 1;
@@ -191,8 +141,8 @@ Stack* get_neighbours(Player* player, int a) {
 	return s;
 }
 
-void get_groups(Player *player, int a) {
-	Stack* s = get_neighbours(player, a);
+void get_groups(int a) {
+	Stack* s = get_neighbours(a);
 
 	//	Nouveau groupe (pion tout seul)
 	if (s == NULL) {
@@ -204,7 +154,7 @@ void get_groups(Player *player, int a) {
 
 	//	Dans un groupe existant
 	else if (s->size == 1) {
-		Group_Pawns *g = &player->groups[find_group(s->val, player)];
+		Group_Pawns *g = &player->groups[find_group(s->val)];
 		g->size++;
 		g->tab[g->size - 1] = a;
 	}
@@ -213,26 +163,74 @@ void get_groups(Player *player, int a) {
 	else if (s->size > 1) {
 
 		//	Premier voisin
-		int i = find_group(s->val, player);
+		int i = find_group(s->val);
 		player->groups[i].size++;
 		player->groups[i].tab[player->groups[i].size - 1] = a;
 		s = stack_pop(s);
 
 		//	Autres voisins
 		while (s != NULL) {
-			int n = find_group(s->val, player);
-			if (!isInGroup(player, i, s->val))	//	Le voisin n'est pas dans le groupe
-				mergeGroups(player, i, n);
+			int n = find_group(s->val);
+			if (!isInGroup(i, s->val))	//	Le voisin n'est pas dans le groupe
+				mergeGroups(i, n);
 			s = stack_pop(s);
 		}
 	}
 }
 
-void play(int a, Player* player) {
+int min_tab(int* tab, int size, int (*f)(int)) {
+	int min = f(tab[0]);
+	for (int i=0; i < size; i++)
+		if (f(tab[i]) < min)
+			min = f(tab[i]);
+	return min;
+}
+
+int max_tab(int* tab, int size, int (*f)(int)) {
+	int min = f(tab[0]);
+	for (int i = 0; i < size; i++)
+		if (f(tab[i]) < min)
+			min = f(tab[i]);
+	return min;
+}
+
+int evaluation() {
+	Player* other = player == &player1 ? &player2 : &player1;
+	int val = 0;
+
+	//	taille des groups
+	int sizeGroups = 0;
+	for (int i = 0; i < player->nbGroups; i++)
+		val += player->groups[i].size * player->groups[i].size;
+	for (int i = 0; i < other->nbGroups; i++)
+		val -= other->groups[i].size * other->groups[i].size;
+	sizeGroups *= 2;
+
+	//	Proximite avec les bords
+	int prox = 0;
+	int(*function)(int) = player == &player1 ? &get_line : &get_column;
+	for (int i = 0; i < player->nbGroups; i++) {
+		int min = min_tab(player->groups[i].tab, player->groups[i].size, function);
+		int max = size - max_tab(player->groups[i].tab, player->groups[i].size, function);
+		prox -= min + max;
+	}
+	function = player == &player1 ? &get_column : &get_line;
+	for (int i = 0; i < other->nbGroups; i++) {
+		int min = min_tab(other->groups[i].tab, other->groups[i].size, function);
+		int max = size - max_tab(other->groups[i].tab, other->groups[i].size, function);
+		prox += min + max;
+	}
+	prox *= 0.5;
+
+	return sizeGroups + prox;
+}
+
+int play(int a) {
 	if (a < 0 || a >= size)
-		return;
+		return -1;
 	plateau[a] = player->c;
-	get_groups(player, a);
+	get_groups(a);
+	return evaluation();
 }
 
 int main() {
@@ -240,6 +238,7 @@ int main() {
 	for (int i = 0; i < size; i++)
 		plateau[i] = 0;
 	print_plateau();
+	printf("\n");
 
 	player1.groups = malloc(size * sizeof(Group_Pawns));
 	player1.vus = malloc(size * sizeof(bool));
@@ -249,14 +248,20 @@ int main() {
 	player2.vus = malloc(size * sizeof(bool));
 	for (int i = 0; i < size; i++)
 		player2.vus[i] = false;
+	player = &player1;
 	
 	char c;
 	while (scanf_s("%c", &c, 2) != EOF) {
-		play(c - 'a', &player1);
-		print_plateau();
-		printf("\n");
-		print_groups(&player1);
-		printf("\n");
+		if (c >= 'a' && c <= 'y') {
+			int val = play(c - 'a');
+			print_plateau();
+			printf("\n");
+			print_groups();
+			printf("player : %c\n", player->c);
+			printf("evaluation : %d\n", val);
+			printf("\n");
+			player = player == &player1 ? &player2 : &player1;
+		}
 	}
 
 	free(plateau);
