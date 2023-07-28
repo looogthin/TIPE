@@ -109,7 +109,7 @@ void initWindow() {
 * Initialise toutes les donnees liees au jeu at aux joueurs
 */
 void initGame() {
-	game.nbCases = 3;
+	game.nbCases = 11;
 	game.size = game.nbCases * game.nbCases;
 	game.xPawn = 98;
 	game.yPawn = 85;
@@ -194,7 +194,7 @@ void mouseButtonLeftPressed(int mouse_x, int mouse_y) {
 		quit("Blue win !", "", EXIT_SUCCESS);
 	draw(renderer);
 
-	mouseButtonRightPresssed(); // IA play
+	//mouseButtonRightPresssed(); // IA play
 }
 
 
@@ -239,7 +239,7 @@ int main(int argc, char** argv) {
 
 	while (event()) {}
 
-	/*while (true) {
+	while (false) {
 		int win = ia_play(&game);
 		draw(renderer);
 		if (win == -1) {
@@ -258,7 +258,7 @@ int main(int argc, char** argv) {
 			//quit("Blue win !", "", EXIT_SUCCESS);
 			system("PAUSE");
 		}
-	}*/
+	}
 		
 	// Quitter
 	quit("", "", EXIT_SUCCESS);

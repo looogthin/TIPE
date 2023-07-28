@@ -15,16 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game.c">
+    <ClCompile Include="game2.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="ia.c">
+    <ClCompile Include="ia1.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="stack.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ia2.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="game1.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

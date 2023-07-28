@@ -130,8 +130,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="game.c" />
-    <ClCompile Include="ia.c" />
+    <ClCompile Include="game1.c" />
+    <ClCompile Include="game2.c" />
+    <ClCompile Include="ia1.c" />
+    <ClCompile Include="ia2.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="stack.c" />
   </ItemGroup>

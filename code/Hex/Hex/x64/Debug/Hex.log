@@ -1,3 +1,2 @@
-﻿  main.c
-E:\Documents\MPI\TIPE\code\Hex\Hex\main.c(233,8): warning C4244: 'fonction' : conversion de 'time_t' en 'unsigned int', perte possible de données
+﻿  ia2.c
   Hex.vcxproj -> E:\Documents\MPI\TIPE\code\Hex\x64\Debug\Hex.exe

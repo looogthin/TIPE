@@ -6,6 +6,15 @@
 #include <stdbool.h>
 
 /*
+*	Structure d'une groupe de pions
+*/
+struct Group_Pawns {
+	int* tab;		//	Tableau contenant les pions
+	int size;		//	Taille du groupe
+};
+typedef struct Group_Pawns Group_Pawns;
+
+/*
 *	Structure d'un joueur
 */
 struct Player {
@@ -13,6 +22,9 @@ struct Player {
 	int* pawn;			//	Tableau contenant les positions des pions (position x aux indices paires et y aux impaires)
 	SDL_Rect* rects;	//	Tableau contenant les rectangles des pions
 	int num;			//	Numero du joueur (1 s'il doit relier de haut en bas, 2 s'il doit relier de gauche a droite)
+	Group_Pawns* groups;//	Tableau des groupes de pions du joueur
+	int nbGroups;		//	Nombre dde groupes de pions du joueur
+	bool* vus;			//	Tableau pour savoir si un pion a deja ete ajoute a un groupe de pions
 };
 typedef struct Player Player;
 
@@ -49,6 +61,16 @@ int get_column(Game *g, int a);
 * Initialise toutes les variables necessaires au joueur
 */
 Player* initPlayer(Game *game, Player *p, int num);
+
+/*
+* 
+*/
+int get_groups(Game* g, Player* player, int a);
+
+/*
+* 
+*/
+bool group_pop(Player* player, int a, int numGrp);
 
 /*
 * void addPawn
@@ -111,18 +133,6 @@ bool isNextWinner(Game* g, bool* vus, int player, int a);
 * Teste si le joueur gagne
 */
 bool isWinner(Game* game, Player* player);
-
-/*
-* bool containsPawn
-* Parametres :
-*	- Player *p : joueur qu'il faut tester
-*	- int x : position x a tester
-*	- int y : position y a tester
-* Return bool : true s'il y a deja un pion sur cette case, false sinon
-*
-* Teste si la case contient deja un pion
-*/
-bool containsPawn(Player *p, int x, int y);
 
 /*
 * int play
