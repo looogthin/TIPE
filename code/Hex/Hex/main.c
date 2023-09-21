@@ -14,6 +14,7 @@ SDL_Color red = { 255, 45, 0, 255 };
 SDL_Color blue = { 0, 12, 255, 255 };
 
 Game game;
+IA ia;
 
 /*
 * void quit
@@ -125,6 +126,8 @@ void initGame() {
 		quit("Erreur lors de l'allocation de memoire", "", EXIT_FAILURE);
 	for (int i = 0; i < game.nbCases * game.nbCases; i++)
 		game.plateau[i] = 0;
+	ia.p = game.blue;
+	ia.other = game.red;
 }
 
 /*
@@ -159,7 +162,7 @@ void draw(SDL_Renderer* renderer) {
 }
 
 void mouseButtonRightPresssed() {
-	int win = ia_play(&game);
+	int win = ia_play(&game, &ia);
 	if (win == 0)
 		game.isTurnRed = !game.isTurnRed;
 	else if (win == 1)
@@ -196,7 +199,6 @@ void mouseButtonLeftPressed(int mouse_x, int mouse_y) {
 
 	//mouseButtonRightPresssed(); // IA play
 }
-
 
 /*
 * bool event
@@ -240,7 +242,7 @@ int main(int argc, char** argv) {
 	while (event()) {}
 
 	while (false) {
-		int win = ia_play(&game);
+		int win = ia_play(&game, &ia);
 		draw(renderer);
 		if (win == -1) {
 			printf("\n\n\nerror\n\n\n");

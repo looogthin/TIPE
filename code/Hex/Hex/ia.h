@@ -3,6 +3,12 @@
 
 #include "game.h"
 
-int ia_play(Game *g);
+struct IA {
+	Player* p;
+	Player* other;
+};
+typedef struct IA IA;
+
+int ia_play(Game *g, IA *ia);
 
 #endif

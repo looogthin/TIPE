@@ -65,6 +65,11 @@ Player* initPlayer(Game *game, Player *p, int num);
 /*
 * 
 */
+int find_group(Player* player, int a);
+
+/*
+* 
+*/
 int get_groups(Game* g, Player* player, int a);
 
 /*

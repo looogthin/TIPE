@@ -80,7 +80,7 @@ Stack* get_neighbours_evaluation(Game* g, Player* player, int a) {
 	return s;
 }
 
-int get_groups(Game* g, Player* player, int a) {
+/*int get_groups(Game* g, Player* player, int a) {
 	Stack* s = get_neighbours_evaluation(g, player, a);
 	int numGrp = 0;
 
@@ -126,6 +126,62 @@ bool group_pop(Player* player, int a, int numGrp) {
 		}
 	}
 	return false;
+}*/
+
+int get_groups(Game *g,Player *player, int a) {
+	Stack* s = get_neighbours_evaluation(g, player, a);
+	int numGrp = 0;
+
+	//	Nouveau groupe (pion tout seul)
+	if (s == NULL) {
+		player->nbGroups++;
+		Group_Pawns grp = { malloc(g->size * sizeof(int)), 1 };
+		grp.tab[0] = a;
+		player->groups[player->nbGroups - 1] = grp;
+	}
+
+	//	Dans un groupe existant
+	else if (s->size == 1) {
+		Group_Pawns* grp = &player->groups[find_group(player, s->val)];
+		grp->size++;
+		grp->tab[grp->size - 1] = a;
+	}
+
+	//	La c'est la merde
+	else if (s->size > 1) {
+
+		//	Premier voisin
+		numGrp = find_group(player, s->val);
+		player->groups[numGrp].size++;
+		player->groups[numGrp].tab[player->groups[numGrp].size - 1] = a;
+		s = stack_pop(s);
+
+		//	Autres voisins
+		while (s != NULL) {
+			int n = find_group(player, s->val);
+			if (!isInGroup(player, numGrp, s->val))	//	Le voisin n'est pas dans le groupe
+				mergeGroups(player, numGrp, n);
+			s = stack_pop(s);
+		}
+	}
+
+	return numGrp;
+}
+
+bool group_pop(Player* player, int a, int g) {
+	if (g < 0 || g >= player->nbGroups || a < 0 || a >= player->groups[g].size)
+		return false;
+	for (int i = 0; i < player->groups[g].size; i++) {
+		if (player->groups[g].tab[i] == a) {
+			player->groups[g].tab[i] = player->groups[g].tab[player->groups[g].size - 1];
+			player->groups[g].size--;
+			if (player->groups[g].size == 0) {
+				player->groups[g] = player->groups[player->nbGroups - 1];
+				player->nbGroups--;
+			}
+		}
+	}
+	return true;
 }
 
 void addPawn(Game *g, Player* p, int x, int y, SDL_Rect rect) {

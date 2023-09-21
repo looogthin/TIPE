@@ -55,6 +55,7 @@ char* plateau;
 Player player1 = { '?', NULL, 0 };
 Player player2 = { '!', NULL, 0 };
 Player* player;
+int coup = 0;
 
 void print_groups() {
 	printf("nombre de groupes : %d\n", player->nbGroups);
@@ -141,20 +142,23 @@ Stack* get_neighbours(int a) {
 	return s;
 }
 
-void get_groups(int a) {
+int get_groups(int a) {
 	Stack* s = get_neighbours(a);
+	int numGrp = -1;
 
 	//	Nouveau groupe (pion tout seul)
 	if (s == NULL) {
 		player->nbGroups++;
 		Group_Pawns g = { malloc(size * sizeof(int)), 1 };
 		g.tab[0] = a;
-		player->groups[player->nbGroups - 1] = g;
+		numGrp = player->nbGroups - 1;
+		player->groups[numGrp] = g;
 	}
 
 	//	Dans un groupe existant
 	else if (s->size == 1) {
-		Group_Pawns *g = &player->groups[find_group(s->val)];
+		numGrp = find_group(s->val);
+		Group_Pawns* g = &player->groups[numGrp];
 		g->size++;
 		g->tab[g->size - 1] = a;
 	}
@@ -163,18 +167,41 @@ void get_groups(int a) {
 	else if (s->size > 1) {
 
 		//	Premier voisin
-		int i = find_group(s->val);
-		player->groups[i].size++;
-		player->groups[i].tab[player->groups[i].size - 1] = a;
+		numGrp = find_group(s->val);
+		Group_Pawns *grp = &player->groups[numGrp];
+		grp->size++;
+		grp->tab[grp->size - 1] = a;
 		s = stack_pop(s);
 
 		//	Autres voisins
 		while (s != NULL) {
 			int n = find_group(s->val);
-			if (!isInGroup(i, s->val))	//	Le voisin n'est pas dans le groupe
-				mergeGroups(i, n);
+			if (!isInGroup(numGrp, s->val))	//	Le voisin n'est pas dans le groupe
+				mergeGroups(numGrp, n);
 			s = stack_pop(s);
 		}
+	}
+	if (numGrp < 0)
+		printf("erreur lors de l'execution de get_groups\n");
+	return numGrp;
+}
+
+void pop_groups(int numGrp, int a) {
+	if (numGrp < 0 || numGrp > player->nbGroups - 1) {
+		printf("Numero de groupe incorrect dans la fonction pop_groups (groupe numero %d alors qu'il y a %d groupes)\n", numGrp, player->nbGroups);
+		return;
+	}
+	Group_Pawns *grp = &(player->groups[numGrp]);
+	Stack* s = NULL;
+	for (int i = 0; i < grp->size; i++)
+		s = stack_push(s, grp->tab[i]);
+	grp->size = 0;
+	for (; s != NULL; s = stack_pop(s))
+		if (s->val != a)
+			get_groups(a);
+	if (grp->size == 0) {
+		swap_groups(numGrp, player->nbGroups - 1);
+		player->nbGroups--;
 	}
 }
 
@@ -194,43 +221,96 @@ int max_tab(int* tab, int size, int (*f)(int)) {
 	return min;
 }
 
-int evaluation() {
+double evaluation() {
 	Player* other = player == &player1 ? &player2 : &player1;
-	int val = 0;
-
+	
 	//	taille des groups
-	int sizeGroups = 0;
+	double sizeGroups = 0;
 	for (int i = 0; i < player->nbGroups; i++)
-		val += player->groups[i].size * player->groups[i].size;
+		sizeGroups += player->groups[i].size * player->groups[i].size;
 	for (int i = 0; i < other->nbGroups; i++)
-		val -= other->groups[i].size * other->groups[i].size;
+		sizeGroups -= other->groups[i].size * other->groups[i].size;
 	sizeGroups *= 2;
 
 	//	Proximite avec les bords
-	int prox = 0;
+	double prox = 0;
 	int(*function)(int) = player == &player1 ? &get_line : &get_column;
 	for (int i = 0; i < player->nbGroups; i++) {
 		int min = min_tab(player->groups[i].tab, player->groups[i].size, function);
 		int max = size - max_tab(player->groups[i].tab, player->groups[i].size, function);
-		prox -= min + max;
+		prox += min + max;
 	}
 	function = player == &player1 ? &get_column : &get_line;
 	for (int i = 0; i < other->nbGroups; i++) {
 		int min = min_tab(other->groups[i].tab, other->groups[i].size, function);
 		int max = size - max_tab(other->groups[i].tab, other->groups[i].size, function);
-		prox += min + max;
+		prox -= min + max;
 	}
-	prox *= 0.5;
+	prox *= 1;
 
 	return sizeGroups + prox;
 }
 
-int play(int a) {
+double play(int a) {
 	if (a < 0 || a >= size)
 		return -1;
 	plateau[a] = player->c;
 	get_groups(a);
+	coup++;
 	return evaluation();
+}
+
+Stack* coups_dispo() {
+	Stack* s = NULL;
+	for (int i = 0; i < size; i++) {
+		if (plateau[i] == 0)
+			s = stack_push(s, i);
+	}
+	return s;
+}
+
+double minmax(int deep, bool isIA) {
+	if (isIA && deep <= 0)
+		return evaluation();
+
+	double max = isIA ? -10000000000.0 : 10000000000.0;
+	for (Stack* s = coups_dispo(); s != NULL; s = stack_pop(s)) {
+		//printf("minmax\n");
+		plateau[s->val] = player2.c;
+		int grp = get_groups(s->val);
+		double val = minmax(deep - 1, !isIA);
+		if (isIA && val > max)
+			max = val;
+		else if (!isIA && val < max)
+			max = val;
+		pop_groups(grp, s->val);
+		plateau[s->val] = 0;
+	}
+
+	return max;
+}
+
+int ia(int deep) {
+	if (deep <= 0)
+		return -1;
+
+	double max = -10000000000;
+	int coup = -1;
+	for (Stack* s = coups_dispo(); s != NULL; s = stack_pop(s)) {
+		//printf("ia\n");
+		plateau[s->val] = player2.c;
+		int numGrp = get_groups(s->val);
+		double val = minmax(deep, true);
+		printf("%c : %f \n", s->val + 'a', val);
+		if (val > max) {
+			max = val;
+			coup = s->val;
+		}
+		pop_groups(numGrp, s->val);
+		plateau[s->val] = 0;
+	}
+
+	return coup;
 }
 
 int main() {
@@ -253,12 +333,24 @@ int main() {
 	char c;
 	while (scanf_s("%c", &c, 2) != EOF) {
 		if (c >= 'a' && c <= 'y') {
-			int val = play(c - 'a');
+			double val = play(c - 'a');
 			print_plateau();
 			printf("\n");
 			print_groups();
 			printf("player : %c\n", player->c);
-			printf("evaluation : %d\n", val);
+			printf("evaluation : %f\n", val);
+			print_groups();
+			printf("\n");
+			player = player == &player1 ? &player2 : &player1;
+
+			int coup = ia(2);
+			val = play(coup);
+			print_plateau();
+			printf("\n");
+			printf("coup : %c\n", coup + 'a');
+			print_groups();
+			printf("player : %c\n", player->c);
+			printf("evaluation : %f\n", val);
 			printf("\n");
 			player = player == &player1 ? &player2 : &player1;
 		}
