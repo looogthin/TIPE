@@ -92,6 +92,8 @@ int get_line(int a) {
 
 void print_plateau() {
 	for (int i = 0; i < nbCases; i++) {
+		for (int j = 0; j < i; j++)
+			printf(" ");
 		for (int j = 0; j < nbCases; j++) {
 			if (plateau[i * nbCases + j] == 0)
 				printf("%c ", i * nbCases + j + 'a');
@@ -125,11 +127,35 @@ void union_neighbours(int p, int a) {
 		uf_union(u, a, bl);
 }
 
-void play(int player, int a) {
+void uf_delete(UnionFind* uf, int p, int a) {
+	assert(a >= 0 && a < uf->n);
+	if (uf->tab[a] == -1) {
+		for (int i = 0; i < uf->n; i++) {
+			if (uf->tab[i] == a) {
+				uf->tab[i] = -1;
+				union_neighbours(p, i);
+			}
+		}
+	}
+	else {
+		int tmp = uf->tab[a];
+		for (int i = 0; i < uf->n; i++) {
+			if (uf->tab[i] == a)
+				uf->tab[i] = tmp;
+		}
+		uf->tab[a] = -1;
+	}
+}
+
+void ia() {
+	
+}
+
+void play(int a) {
 	if (plateau[a] != 0)
 		return;
-	plateau[a] = player;
-	union_neighbours(player, a);
+	plateau[a] = 1;
+	union_neighbours(1, a);
 	print_plateau();
 	printf("\n");
 	uf_print(grp1);
@@ -146,14 +172,24 @@ int main() {
 	grp1 = uf_create(size);
 	grp2 = uf_create(size);
 
+	play('a' - 'a');
+	play('b' - 'a');
+	play('c' - 'a');
+	play('d' - 'a');
+	play('e' - 'a');
+
 	char c;
 	while (scanf_s("%c", &c, 2) != EOF) {
 		if (c == '5')
 			break;
 		int a = c - 'a';
-		if (a >= 0 && a < 25)
-			play(1, a);
-
+		if (a >= 0 && a < 25) {
+			plateau[a] = 0;
+			uf_delete(grp1, 1, a);
+			print_plateau();
+			printf("\n");
+			uf_print(grp1);
+		}
 		printf("\n");
 	}
 
