@@ -193,12 +193,29 @@ bool is_color(Plateau* p, int c, int i) {	//	Teste si la case du tableau a la bo
 	return p->tab[i] == c;
 }
 
-bool True(Plateau* p, int c, int i) {	//	Uniquement pour avoir le bon type pour un pointeur de fonction
+bool True(Plateau* p, int c, int i) {	//	Uniquement pour avoir le bon type pour un pointeur de fonction (renvoie toujours true)
 	return true;
 }
 
-float kirchoff(Plateau* p, Graph* g, int a) {
+float req_derivation(Stack *s) {
+	float r = 0.0;
+	while (s != NULL) {
+		r += 1.0 / s->w;
+		s = s->prev;
+	}
+	return 1.0 / r;
+}
 
+float kirchoff(Plateau* p, Graph* g, int a) {
+	bool* vue = malloc(p->size * sizeof(bool)); assert(vue != NULL);
+	for (int i = 0; i < p->size; i++)
+		vue[i] = false;
+
+	for (int i = 0; i < p->size; i++) {
+
+	}
+
+	free(vue);
 }
 
 /*
