@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <math.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -101,6 +102,10 @@ void graph_free(Graph* g) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+float tension(Plateau* p, Graph* g) {
+
+}
+
 /*
 	int evaluate
 
@@ -113,11 +118,7 @@ void graph_free(Graph* g) {
 	Teste si la position est avantageuse ou non pour le joueur
 */
 int evaluate(Plateau* p, Graph* g, Graph* ga) {
-	printf("Joueur 1 :\n");
-	graph_print(g);
-	printf("\nJoueur2 :\n");
-	graph_print(ga);
-	return 0;
+	return log(tension(p, g) / tension(p, ga));
 }
 
 /*
