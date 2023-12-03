@@ -14,7 +14,7 @@ SDL_Color red = { 255, 45, 0, 255 };
 SDL_Color blue = { 0, 12, 255, 255 };
 
 Game game;
-IA ia;
+IA ia1, ia2;
 
 /*
 * void quit
@@ -28,6 +28,7 @@ IA ia;
 */
 void quit(const char* message1, const char* message2, int statut) {
 	printf("%s %s\n", message1, message2);
+	system("PAUSE");
 	if (renderer != NULL)
 		SDL_DestroyRenderer(renderer);
 	if (window != NULL)
@@ -110,7 +111,7 @@ void initWindow() {
 * Initialise toutes les donnees liees au jeu at aux joueurs
 */
 void initGame() {
-	game.nbCases = 5;
+	game.nbCases = 11;
 	game.size = game.nbCases * game.nbCases;
 	game.xPawn = 98;
 	game.yPawn = 85;
@@ -126,8 +127,10 @@ void initGame() {
 		quit("Erreur lors de l'allocation de memoire", "", EXIT_FAILURE);
 	for (int i = 0; i < game.nbCases * game.nbCases; i++)
 		game.plateau[i] = 0;
-	ia.p = game.blue;
-	ia.other = game.red;
+	ia1.p = game.blue;
+	ia1.other = game.red;
+	ia2.p = game.red;
+	ia2.other = game.blue;
 }
 
 /*
@@ -162,19 +165,20 @@ void draw(SDL_Renderer* renderer) {
 }
 
 void mouseButtonRightPresssed() {
-	int coup = ia_play(&game, &ia);
+	IA* iA = game.isTurnRed ? &ia1 : &ia2;
+	int coup = ia_play(&game, iA);
 	int x = get_column(&game, coup);
 	int y = get_line(&game, coup);
 	Player* p1 = game.isTurnRed ? game.red : game.blue;
 	SDL_Rect rect = { x * game.xPawn + (y * game.xPawn / 2) + game.sizeLeft, y * game.yPawn + game.sizeTop, game.sizePrintPawn, game.sizePrintPawn };
 	int win = play(&game, x, y, rect);
+	draw(renderer);
 	if (win == 0)
 		game.isTurnRed = !game.isTurnRed;
 	else if (win == 1)
 		quit("Red win !", "", EXIT_SUCCESS);
 	else if (win == 2)
 		quit("Blue win !", "", EXIT_SUCCESS);
-	draw(renderer);
 }
 
 /*
@@ -246,28 +250,9 @@ int main(int argc, char** argv) {
 
 	mouseButtonRightPresssed(); //	IA start
 
-	while (event()) {}
+	//while (event()) {}
 
-	while (false) {
-		int win = ia_play(&game, &ia);
-		draw(renderer);
-		if (win == -1) {
-			printf("\n\n\nerror\n\n\n");
-			continue;
-		}
-		else if (win == 0)
-			game.isTurnRed = !game.isTurnRed;
-		else if (win == 1) {
-			printf("Red win !");
-			//quit("Red win !", "", EXIT_SUCCESS);
-			system("PAUSE");
-		}
-		else if (win == 2) {
-			printf("Blue win !");
-			//quit("Blue win !", "", EXIT_SUCCESS);
-			system("PAUSE");
-		}
-	}
+	while (true) mouseButtonRightPresssed();
 		
 	// Quitter
 	quit("", "", EXIT_SUCCESS);

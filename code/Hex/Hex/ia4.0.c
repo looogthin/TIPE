@@ -108,6 +108,12 @@ int MCTS(Game *g, int player, int nbTests) {
 * Determine le meilleur coup possible a jouer pour l'IA
 */
 int ia_play(Game *g, IA *ia) {
-	int coup = MCTS(g, ia->p->num, 10000);
+	int niveau;
+	if (ia->p->num == 1) niveau = 5000;
+	else niveau = 1000;
+	time_t begin = time(NULL);
+	int coup = MCTS(g, ia->p->num, niveau);
+	time_t end = time(NULL);
+	printf("niveau : %d, time : %ld\n", niveau, (unsigned long)difftime(end, begin));
 	return coup;
 }
