@@ -1,0 +1,3 @@
+﻿  main.c
+E:\Documents\MPI\TIPE\code\IA 4.0\IA 4.0\main.c(279,8): warning C4244: 'fonction' : conversion de 'time_t' en 'unsigned int', perte possible de données
+  IA 4.0.vcxproj -> E:\Documents\MPI\TIPE\code\IA 4.0\x64\Debug\IA 4.0.exe

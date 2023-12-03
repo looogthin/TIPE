@@ -110,7 +110,7 @@ void initWindow() {
 * Initialise toutes les donnees liees au jeu at aux joueurs
 */
 void initGame() {
-	game.nbCases = 11;
+	game.nbCases = 5;
 	game.size = game.nbCases * game.nbCases;
 	game.xPawn = 98;
 	game.yPawn = 85;
@@ -162,7 +162,12 @@ void draw(SDL_Renderer* renderer) {
 }
 
 void mouseButtonRightPresssed() {
-	int win = ia_play(&game, &ia);
+	int coup = ia_play(&game, &ia);
+	int x = get_column(&game, coup);
+	int y = get_line(&game, coup);
+	Player* p1 = game.isTurnRed ? game.red : game.blue;
+	SDL_Rect rect = { x * game.xPawn + (y * game.xPawn / 2) + game.sizeLeft, y * game.yPawn + game.sizeTop, game.sizePrintPawn, game.sizePrintPawn };
+	int win = play(&game, x, y, rect);
 	if (win == 0)
 		game.isTurnRed = !game.isTurnRed;
 	else if (win == 1)
@@ -197,7 +202,7 @@ void mouseButtonLeftPressed(int mouse_x, int mouse_y) {
 		quit("Blue win !", "", EXIT_SUCCESS);
 	draw(renderer);
 
-	//mouseButtonRightPresssed(); // IA play
+	mouseButtonRightPresssed(); // IA play
 }
 
 /*
@@ -238,6 +243,8 @@ int main(int argc, char** argv) {
 
 	//	Boucle
 	draw(renderer);
+
+	mouseButtonRightPresssed(); //	IA start
 
 	while (event()) {}
 

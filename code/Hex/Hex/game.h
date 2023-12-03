@@ -63,21 +63,6 @@ int get_column(Game *g, int a);
 Player* initPlayer(Game *game, Player *p, int num);
 
 /*
-* 
-*/
-int find_group(Player* player, int a);
-
-/*
-* 
-*/
-int get_groups(Game* g, Player* player, int a);
-
-/*
-* 
-*/
-bool group_pop(Player* player, int a, int numGrp);
-
-/*
 * void addPawn
 * Parametres :
 *	- Player *p : joueur dans lequel doit etre ajoute le pion
@@ -91,19 +76,6 @@ bool group_pop(Player* player, int a, int numGrp);
 void addPawn(Game *g, Player* p, int x, int y, SDL_Rect rect);
 
 /*
-* bool areInContact
-* Parametres :
-*	- int x1 : position x de la 1ere case a tester
-*	- int y1 : position y de la 1ere case a tester
-*	- int x2 : position x de la 2e case a tester
-*	- int y2 : position y de la 2e case a tester
-* Return bool : true si les 2 cases se touchent, false sinon
-*
-* Teste si 2 cases se touchent ou non
-*/
-bool areInContact(int x1, int y1, int x2, int y2);
-
-/*
 * Stack* get_neighbours
 * Parametres :
 *	- Game *g : parametres du jeu
@@ -114,20 +86,7 @@ bool areInContact(int x1, int y1, int x2, int y2);
 * 
 * Renvoie une pile contenant les voisins non visite de la case
 */
-Stack* get_neighbours(Game* g, bool* vus, int player, int a);
-
-/*
-* Stack* get_neighbours
-* Parametres :
-*	- Game *g : parametres du jeu
-*	- bool *vus : tableau de booleens qui valent true si le piona deja ete visite
-*	- int player : numero du joueur
-*	- int a : case a tester
-* Return bool : true si le pion et sur un chemin gagnant, false sinon
-*
-* Renvoie si le pion est sur un chemin gagnant
-*/
-bool isNextWinner(Game* g, bool* vus, int player, int a);
+Stack* get_neighbours(Game* g, int player, int a);
 
 /*
 * bool isWinner
@@ -137,7 +96,7 @@ bool isNextWinner(Game* g, bool* vus, int player, int a);
 *
 * Teste si le joueur gagne
 */
-bool isWinner(Game* game, Player* player);
+bool isWinner(Game* game, int player);
 
 /*
 * int play

@@ -1,7 +1,7 @@
 #include "game.h"
 #include <stdlib.h>
 #include <stdio.h>
-
+/*/
 int get_line(Game *g, int a) {
 	return a / g->nbCases;
 }
@@ -79,7 +79,7 @@ Stack* get_neighbours_evaluation(Game* g, Player* player, int a) {
 		s = stack_push(s, bl);
 	return s;
 }
-
+*/
 /*int get_groups(Game* g, Player* player, int a) {
 	Stack* s = get_neighbours_evaluation(g, player, a);
 	int numGrp = 0;
@@ -127,7 +127,7 @@ bool group_pop(Player* player, int a, int numGrp) {
 	}
 	return false;
 }*/
-
+/*
 int get_groups(Game *g,Player *player, int a) {
 	Stack* s = get_neighbours_evaluation(g, player, a);
 	int numGrp = 0;
@@ -220,4 +220,4 @@ int play(Game *g, int x, int y, SDL_Rect rect) {
 	if (isWinner(g, p))	//	On teste que le joueur qui viens de jouer
 		return p->num;
 	return 0;
-}
+}*/
