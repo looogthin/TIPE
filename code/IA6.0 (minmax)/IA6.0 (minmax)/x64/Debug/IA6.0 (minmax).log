@@ -1,0 +1,3 @@
+﻿  main.c
+E:\Documents\MPI\TIPE\code\IA6.0 (minmax)\IA6.0 (minmax)\main.c(314,8): warning C4244: 'fonction' : conversion de 'time_t' en 'unsigned int', perte possible de données
+  IA6.0 (minmax).vcxproj -> E:\Documents\MPI\TIPE\code\IA6.0 (minmax)\x64\Debug\IA6.0 (minmax).exe

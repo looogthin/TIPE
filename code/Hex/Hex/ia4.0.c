@@ -75,9 +75,9 @@ int MCTS(Game *g, int player, int nbTests) {
 			if (goEnd == -1)
 				return -1;
 			else if (goEnd == player)
-				tmp++;
+				tmp += 1;
 			else
-				tmp--;
+				tmp -= 1;
 		}
 		if (tmp > max) {
 			max = tmp;
@@ -109,7 +109,7 @@ int MCTS(Game *g, int player, int nbTests) {
 */
 int ia_play(Game *g, IA *ia) {
 	int niveau;
-	if (ia->p->num == 1) niveau = 5000;
+	if (ia->p->num == 1) niveau = 1000;
 	else niveau = 1000;
 	time_t begin = time(NULL);
 	int coup = MCTS(g, ia->p->num, niveau);

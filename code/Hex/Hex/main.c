@@ -111,7 +111,7 @@ void initWindow() {
 * Initialise toutes les donnees liees au jeu at aux joueurs
 */
 void initGame() {
-	game.nbCases = 11;
+	game.nbCases = 8;
 	game.size = game.nbCases * game.nbCases;
 	game.xPawn = 98;
 	game.yPawn = 85;
@@ -250,9 +250,9 @@ int main(int argc, char** argv) {
 
 	mouseButtonRightPresssed(); //	IA start
 
-	//while (event()) {}
+	while (event()) {}
 
-	while (true) mouseButtonRightPresssed();
+	//while (true) mouseButtonRightPresssed();
 		
 	// Quitter
 	quit("", "", EXIT_SUCCESS);
